@@ -274,6 +274,13 @@ button.active {
   background: var(--color-surface);
 }
 
+@media (max-width: 767px) {
+  .card-viewer__card .card-detail__content {
+    font-size: 1.15rem;
+    line-height: 1.85;
+  }
+}
+
 .card-viewer__next {
   align-self: center;
   min-width: 10rem;
