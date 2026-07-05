@@ -253,6 +253,38 @@ button.active {
   flex-wrap: wrap;
 }
 
+.card-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.card-viewer__position {
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.card-viewer__card {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+}
+
+.card-viewer__next {
+  align-self: center;
+  min-width: 10rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  border-color: var(--color-accent);
+}
+
 .browse-count {
   display: flex;
   align-items: center;
@@ -284,9 +316,16 @@ button.active {
   font-size: 0.85rem;
 }
 
-.card-detail__back {
-  display: inline-block;
+.card-detail__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.75rem;
+}
+
+.card-detail__back,
+.card-detail__edit {
+  display: inline-block;
   color: var(--color-accent);
   text-decoration: none;
   font-size: 0.9rem;
@@ -362,11 +401,29 @@ button.active {
   margin-bottom: 1rem;
 }
 
+.register-page__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
 .register-page__submit {
   background: var(--color-accent);
   color: var(--color-accent-contrast);
   border-color: var(--color-accent);
   font-weight: 600;
+}
+
+.register-page__delete {
+  color: #c62828;
+  border-color: #c62828;
+}
+
+@media (prefers-color-scheme: dark) {
+  .register-page__delete {
+    color: #ff8a80;
+    border-color: #ff8a80;
+  }
 }
 
 .register-page__status {

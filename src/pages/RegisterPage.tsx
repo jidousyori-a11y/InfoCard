@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useCards } from "../hooks/useCards";
 import { TagFilter } from "../components/TagFilter";
 import { NOTE_THRESHOLD } from "../shared/constants.mjs";
 
 export function RegisterPage() {
+  const { id: routeId } = useParams<{ id?: string }>();
   const { cards, allTags } = useCards();
   const [editingId, setEditingId] = useState("");
   const [title, setTitle] = useState("");
@@ -34,6 +36,13 @@ export function RegisterPage() {
     }
   };
 
+  useEffect(() => {
+    if (routeId) {
+      loadForEdit(routeId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeId, cards]);
+
   const addNewTag = () => {
     const t = newTag.trim();
     if (t && !tags.includes(t)) {
@@ -61,6 +70,25 @@ export function RegisterPage() {
       }
     } catch {
       setStatus("保存に失敗しました(ローカル開発サーバーが起動しているか確認してください)。");
+    }
+  };
+
+  const deleteCard = async () => {
+    if (!editingId) return;
+    if (!confirm(`「${title}」を削除します。この操作は元に戻せません。よろしいですか?`)) {
+      return;
+    }
+    setStatus("削除中...");
+    try {
+      const res = await fetch(`/api/cards/${editingId}`, { method: "DELETE" });
+      if (res.ok) {
+        setStatus("削除しました。ページを再読み込みします...");
+        setTimeout(() => location.reload(), 500);
+      } else {
+        setStatus("削除に失敗しました。");
+      }
+    } catch {
+      setStatus("削除に失敗しました(ローカル開発サーバーが起動しているか確認してください)。");
     }
   };
 
@@ -114,9 +142,16 @@ export function RegisterPage() {
         </button>
       </div>
 
-      <button className="register-page__submit" onClick={submit} disabled={!title.trim()}>
-        {editingId ? "更新する" : "登録する"}
-      </button>
+      <div className="register-page__actions">
+        <button className="register-page__submit" onClick={submit} disabled={!title.trim()}>
+          {editingId ? "更新する" : "登録する"}
+        </button>
+        {editingId && (
+          <button type="button" className="register-page__delete" onClick={deleteCard}>
+            このカードを削除
+          </button>
+        )}
+      </div>
       {status && <p className="register-page__status">{status}</p>}
     </section>
   );

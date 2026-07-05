@@ -65,6 +65,22 @@ export function registerApiPlugin(): Plugin {
           }
 
           const match = req.url.match(/^\/api\/cards\/([^/]+)$/);
+
+          if (req.method === "DELETE" && match) {
+            const id = decodeURIComponent(match[1]);
+            const filePath = path.join(CARDS_DIR, `${id}.md`);
+            if (!fs.existsSync(filePath)) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ error: "not found" }));
+              return;
+            }
+            fs.unlinkSync(filePath);
+            generateIndex();
+            res.statusCode = 200;
+            res.end(JSON.stringify({ id }));
+            return;
+          }
+
           if (req.method === "PUT" && match) {
             const id = decodeURIComponent(match[1]);
             const filePath = path.join(CARDS_DIR, `${id}.md`);

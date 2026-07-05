@@ -24,6 +24,7 @@ export default function App() {
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/cards/:id" element={<CardDetailPage />} />
             {import.meta.env.DEV && <Route path="/register" element={<RegisterPage />} />}
+            {import.meta.env.DEV && <Route path="/register/:id" element={<RegisterPage />} />}
           </Routes>
         </main>
       </div>

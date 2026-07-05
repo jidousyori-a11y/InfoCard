@@ -1,13 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { marked } from "marked";
 import { useCards } from "../hooks/useCards";
 import { recordViewed } from "../lib/lastViewed";
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
-}
+import { CardView } from "../components/CardView";
 
 export function CardDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,11 +12,6 @@ export function CardDetailPage() {
   useEffect(() => {
     if (card) recordViewed(card.id);
   }, [card]);
-
-  const html = useMemo(
-    () => (card ? (marked.parse(card.content, { async: false }) as string) : ""),
-    [card]
-  );
 
   if (!card) {
     return (
@@ -34,29 +24,17 @@ export function CardDetailPage() {
 
   return (
     <section className="page card-detail">
-      <Link to="/" className="card-detail__back">
-        ← 検索に戻る
-      </Link>
-      <h2>
-        <span className={`type-badge type-badge--${card.type}`}>
-          {card.type === "note" ? "ノート" : "カード"}
-        </span>
-        {card.title}
-      </h2>
-      <div className="card-detail__tags">
-        {card.tags.map((t) => (
-          <span key={t} className="tag-pill">
-            {t}
-          </span>
-        ))}
+      <div className="card-detail__nav">
+        <Link to="/" className="card-detail__back">
+          ← 検索に戻る
+        </Link>
+        {import.meta.env.DEV && (
+          <Link to={`/register/${card.id}`} className="card-detail__edit">
+            編集する
+          </Link>
+        )}
       </div>
-      <dl className="card-detail__meta">
-        <dt>登録日</dt>
-        <dd>{formatDate(card.createdAt)}</dd>
-        <dt>最終更新日</dt>
-        <dd>{formatDate(card.updatedAt)}</dd>
-      </dl>
-      <div className="card-detail__content" dangerouslySetInnerHTML={{ __html: html }} />
+      <CardView card={card} />
     </section>
   );
 }
