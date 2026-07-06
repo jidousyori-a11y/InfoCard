@@ -275,9 +275,14 @@ button.active {
 }
 
 @media (max-width: 767px) {
-  .card-viewer__card .card-detail__content {
+  .card-detail__content {
     font-size: 1.15rem;
     line-height: 1.85;
+  }
+
+  .card-viewer__card .card-detail__content {
+    font-size: 1.3rem;
+    line-height: 1.95;
   }
 }
 
