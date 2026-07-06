@@ -11,10 +11,10 @@ export default function App() {
         <header className="app__header">
           <h1 className="app__title">情報カード</h1>
           <nav className="app__nav">
+            <NavLink to="/browse">閲覧</NavLink>
             <NavLink to="/" end>
               検索
             </NavLink>
-            <NavLink to="/browse">閲覧</NavLink>
             {import.meta.env.DEV && <NavLink to="/register">登録</NavLink>}
           </nav>
         </header>

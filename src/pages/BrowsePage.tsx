@@ -78,11 +78,11 @@ export function BrowsePage() {
 
       {!isViewing && (
         <div className="browse-tabs">
-          <button className={mode === "recent" ? "active" : ""} onClick={() => setMode("recent")}>
-            最近登録した順
-          </button>
           <button className={mode === "random" ? "active" : ""} onClick={() => setMode("random")}>
             ランダム
+          </button>
+          <button className={mode === "recent" ? "active" : ""} onClick={() => setMode("recent")}>
+            最近登録した順
           </button>
           <button className={mode === "range" ? "active" : ""} onClick={() => setMode("range")}>
             期間指定
