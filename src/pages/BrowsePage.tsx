@@ -21,7 +21,7 @@ function pickRandom(cards: Card[], count: number): Card[] {
 
 export function BrowsePage() {
   const { cards, allTags } = useCards();
-  const [mode, setMode] = useState<Mode>("recent");
+  const [mode, setMode] = useState<Mode>("random");
   const [tags, setTags] = useState<string[]>([]);
   const [type, setType] = useState<TypeFilterValue>("all");
   const [randomType, setRandomType] = useState<TypeFilterValue>("card");

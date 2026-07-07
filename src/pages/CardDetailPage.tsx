@@ -17,7 +17,7 @@ export function CardDetailPage() {
     return (
       <section className="page">
         <p>カードが見つかりません。</p>
-        <Link to="/">検索に戻る</Link>
+        <Link to="/search">検索に戻る</Link>
       </section>
     );
   }
@@ -25,7 +25,7 @@ export function CardDetailPage() {
   return (
     <section className="page card-detail">
       <div className="card-detail__nav">
-        <Link to="/" className="card-detail__back">
+        <Link to="/search" className="card-detail__back">
           ← 検索に戻る
         </Link>
         {import.meta.env.DEV && (
