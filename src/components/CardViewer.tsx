@@ -9,9 +9,10 @@ import type { Card } from "../types";
 interface CardViewerProps {
   cards: Card[];
   onExit: () => void;
+  onCardUpdated: (card: Card) => void;
 }
 
-export function CardViewer({ cards, onExit }: CardViewerProps) {
+export function CardViewer({ cards, onExit, onCardUpdated }: CardViewerProps) {
   const { allTags } = useCards();
   const [index, setIndex] = useState(0);
   const [editing, setEditing] = useState(false);
@@ -59,8 +60,15 @@ export function CardViewer({ cards, onExit }: CardViewerProps) {
         body: JSON.stringify({ title: editTitle, content: editContent, tags: editTags }),
       });
       if (res.ok) {
-        setStatus("保存しました。ページを再読み込みします...");
-        setTimeout(() => location.reload(), 500);
+        onCardUpdated({
+          ...current,
+          title: editTitle,
+          content: editContent,
+          tags: editTags,
+          updatedAt: new Date().toISOString(),
+          type: editContent.trim().length > NOTE_THRESHOLD ? "note" : "card",
+        });
+        setEditing(false);
       } else {
         setStatus("保存に失敗しました。");
       }

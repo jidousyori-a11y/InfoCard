@@ -91,7 +91,13 @@ export function BrowsePage() {
       )}
 
       {isViewing ? (
-        <CardViewer cards={session} onExit={() => setSession(null)} />
+        <CardViewer
+          cards={session}
+          onExit={() => setSession(null)}
+          onCardUpdated={(updated) =>
+            setSession((prev) => (prev ? prev.map((c) => (c.id === updated.id ? updated : c)) : prev))
+          }
+        />
       ) : (
         <>
           <TypeFilter value={mode === "random" ? randomType : type} onChange={mode === "random" ? setRandomType : setType} />
