@@ -286,6 +286,13 @@ button.active {
   }
 }
 
+.card-viewer__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .card-viewer__next {
   align-self: center;
   min-width: 10rem;
@@ -295,6 +302,22 @@ button.active {
   background: var(--color-accent);
   color: var(--color-accent-contrast);
   border-color: var(--color-accent);
+}
+
+.card-viewer__edit-entry {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.card-viewer__edit {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-viewer__edit-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 .browse-count {
