@@ -9,6 +9,15 @@ export function normalizeForSearch(s: string): string {
 }
 
 /**
+ * ソースの絞り込みでは「TV：100分de名著」のような値を「TV」でグループ化する。
+ * 「：」がなければ全体をそのままグループとして扱う。
+ */
+export function sourceGroup(source: string): string {
+  const idx = source.indexOf("：");
+  return idx === -1 ? source : source.slice(0, idx);
+}
+
+/**
  * 日本語は単語間に空白がないため、トークン単位で照合するライブラリ(MiniSearchなど)では
  * 「本文中の一部分」にしか出現しない語(例: 「明智光秀」の中の「光秀」)がヒットしない。
  * そのため単純な部分一致(複数キーワードはAND)で実装する。

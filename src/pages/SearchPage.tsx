@@ -4,15 +4,15 @@ import { TagFilter } from "../components/TagFilter";
 import { TypeFilter, type TypeFilterValue } from "../components/TypeFilter";
 import { SourceFilter, UNREGISTERED_SOURCE } from "../components/SourceFilter";
 import { CardList } from "../components/CardList";
-import { searchCards, normalizeForSearch } from "../lib/search";
+import { searchCards, normalizeForSearch, sourceGroup } from "../lib/search";
 
 export function SearchPage() {
-  const { cards, allTags, allSources } = useCards();
+  const { cards, allTags, allSourceGroups } = useCards();
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"title" | "full">("full");
   const [tags, setTags] = useState<string[]>([]);
   const [type, setType] = useState<TypeFilterValue>("all");
-  const [sourceFilter, setSourceFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<string[]>([]);
   const [sourceQuery, setSourceQuery] = useState("");
 
   const hasUnregisteredSource = useMemo(() => cards.some((c) => !c.source), [cards]);
@@ -25,11 +25,12 @@ export function SearchPage() {
     if (type !== "all") {
       list = list.filter((c) => c.type === type);
     }
-    if (sourceFilter === UNREGISTERED_SOURCE) {
-      list = list.filter((c) => !c.source);
-    } else if (sourceFilter) {
-      const target = normalizeForSearch(sourceFilter);
-      list = list.filter((c) => normalizeForSearch(c.source) === target);
+    if (sourceFilter.length > 0) {
+      const targets = sourceFilter.map((f) => (f === UNREGISTERED_SOURCE ? f : normalizeForSearch(f)));
+      list = list.filter((c) => {
+        if (!c.source) return targets.includes(UNREGISTERED_SOURCE);
+        return targets.includes(normalizeForSearch(sourceGroup(c.source)));
+      });
     }
     if (sourceQuery.trim()) {
       const target = normalizeForSearch(sourceQuery.trim());
@@ -62,9 +63,9 @@ export function SearchPage() {
       <TypeFilter value={type} onChange={setType} />
       <TagFilter allTags={allTags} selected={tags} onChange={setTags} />
       <SourceFilter
-        allSources={allSources}
+        allSources={allSourceGroups}
         hasUnregistered={hasUnregisteredSource}
-        value={sourceFilter}
+        selected={sourceFilter}
         onChange={setSourceFilter}
       />
       <label className="field">

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import cardsData from "../generated/cards.json";
 import type { Card } from "../types";
 import { DEFAULT_TAGS } from "../data/defaultTags";
+import { sourceGroup } from "../lib/search";
 
 export function useCards() {
   const cards = cardsData as Card[];
@@ -21,5 +22,13 @@ export function useCards() {
     return Array.from(set).sort();
   }, [cards]);
 
-  return { cards, allTags, allSources };
+  const allSourceGroups = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of cards) {
+      if (c.source) set.add(sourceGroup(c.source));
+    }
+    return Array.from(set).sort();
+  }, [cards]);
+
+  return { cards, allTags, allSources, allSourceGroups };
 }
