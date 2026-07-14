@@ -52,6 +52,7 @@ export function registerApiPlugin(): Plugin {
               id,
               title: body.title ?? "(無題)",
               tags: Array.isArray(body.tags) ? body.tags : [],
+              source: typeof body.source === "string" ? body.source : "",
               createdAt: now,
               updatedAt: now,
             };
@@ -96,6 +97,7 @@ export function registerApiPlugin(): Plugin {
               id,
               title: body.title ?? existing.data.title,
               tags: Array.isArray(body.tags) ? body.tags : existing.data.tags,
+              source: typeof body.source === "string" ? body.source : (existing.data.source ?? ""),
               createdAt: existing.data.createdAt,
               updatedAt: now,
             };

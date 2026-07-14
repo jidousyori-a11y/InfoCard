@@ -13,5 +13,13 @@ export function useCards() {
     return Array.from(set);
   }, [cards]);
 
-  return { cards, allTags };
+  const allSources = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of cards) {
+      if (c.source) set.add(c.source);
+    }
+    return Array.from(set).sort();
+  }, [cards]);
+
+  return { cards, allTags, allSources };
 }

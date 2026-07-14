@@ -2,15 +2,20 @@ import { useMemo, useState } from "react";
 import { useCards } from "../hooks/useCards";
 import { TagFilter } from "../components/TagFilter";
 import { TypeFilter, type TypeFilterValue } from "../components/TypeFilter";
+import { SourceFilter, UNREGISTERED_SOURCE } from "../components/SourceFilter";
 import { CardList } from "../components/CardList";
-import { searchCards } from "../lib/search";
+import { searchCards, normalizeForSearch } from "../lib/search";
 
 export function SearchPage() {
-  const { cards, allTags } = useCards();
+  const { cards, allTags, allSources } = useCards();
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"title" | "full">("full");
   const [tags, setTags] = useState<string[]>([]);
   const [type, setType] = useState<TypeFilterValue>("all");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const [sourceQuery, setSourceQuery] = useState("");
+
+  const hasUnregisteredSource = useMemo(() => cards.some((c) => !c.source), [cards]);
 
   const results = useMemo(() => {
     let list = searchCards(cards, query, mode);
@@ -20,8 +25,18 @@ export function SearchPage() {
     if (type !== "all") {
       list = list.filter((c) => c.type === type);
     }
+    if (sourceFilter === UNREGISTERED_SOURCE) {
+      list = list.filter((c) => !c.source);
+    } else if (sourceFilter) {
+      const target = normalizeForSearch(sourceFilter);
+      list = list.filter((c) => normalizeForSearch(c.source) === target);
+    }
+    if (sourceQuery.trim()) {
+      const target = normalizeForSearch(sourceQuery.trim());
+      list = list.filter((c) => normalizeForSearch(c.source).includes(target));
+    }
     return list;
-  }, [cards, query, mode, tags, type]);
+  }, [cards, query, mode, tags, type, sourceFilter, sourceQuery]);
 
   return (
     <section className="page">
@@ -46,6 +61,21 @@ export function SearchPage() {
       </div>
       <TypeFilter value={type} onChange={setType} />
       <TagFilter allTags={allTags} selected={tags} onChange={setTags} />
+      <SourceFilter
+        allSources={allSources}
+        hasUnregistered={hasUnregisteredSource}
+        value={sourceFilter}
+        onChange={setSourceFilter}
+      />
+      <label className="field">
+        ソースの部分一致検索
+        <input
+          type="search"
+          placeholder="例: 日経"
+          value={sourceQuery}
+          onChange={(e) => setSourceQuery(e.target.value)}
+        />
+      </label>
       <p className="result-count">{results.length}件</p>
       <CardList cards={results} />
     </section>

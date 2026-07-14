@@ -18,6 +18,7 @@ export function CardListItem({ card }: { card: Card }) {
       <div className="card-list-item__meta">
         <span>{formatDate(card.createdAt)}</span>
         {card.tags.length > 0 && <span className="card-list-item__tags">{card.tags.join(" / ")}</span>}
+        <span className="card-list-item__source">{card.source || "未登録"}</span>
       </div>
     </Link>
   );

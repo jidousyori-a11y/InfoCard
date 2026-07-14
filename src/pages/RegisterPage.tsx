@@ -6,10 +6,11 @@ import { NOTE_THRESHOLD } from "../shared/constants.mjs";
 
 export function RegisterPage() {
   const { id: routeId } = useParams<{ id?: string }>();
-  const { cards, allTags } = useCards();
+  const { cards, allTags, allSources } = useCards();
   const [editingId, setEditingId] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [source, setSource] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [status, setStatus] = useState("");
@@ -25,6 +26,7 @@ export function RegisterPage() {
     if (!id) {
       setTitle("");
       setContent("");
+      setSource("");
       setTags([]);
       return;
     }
@@ -32,6 +34,7 @@ export function RegisterPage() {
     if (card) {
       setTitle(card.title);
       setContent(card.content);
+      setSource(card.source);
       setTags(card.tags);
     }
   };
@@ -53,7 +56,7 @@ export function RegisterPage() {
 
   const submit = async () => {
     setStatus("送信中...");
-    const payload = { title, content, tags };
+    const payload = { title, content, tags, source };
     const url = editingId ? `/api/cards/${editingId}` : "/api/cards";
     const method = editingId ? "PUT" : "POST";
     try {
@@ -127,6 +130,34 @@ export function RegisterPage() {
           ? `情報ノートとして登録されます(${NOTE_THRESHOLD}字超)`
           : `情報カードとして登録されます(${NOTE_THRESHOLD}字以下)`}
       </p>
+
+      <label className="field">
+        ソース(任意)
+        <div className="source-field">
+          <input
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+            placeholder="書籍名・URLなど(新規入力も可)"
+          />
+          {allSources.length > 0 && (
+            <select
+              className="source-field__select"
+              value=""
+              onChange={(e) => {
+                if (e.target.value) setSource(e.target.value);
+                e.target.value = "";
+              }}
+            >
+              <option value="">既存のソースから選択…</option>
+              {allSources.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      </label>
 
       <TagFilter allTags={allTags} selected={tags} onChange={setTags} />
 

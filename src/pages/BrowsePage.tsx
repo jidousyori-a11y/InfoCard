@@ -72,6 +72,11 @@ export function BrowsePage() {
 
   const isViewing = mode === "random" && session !== null;
 
+  const recentlyAdded = useMemo(
+    () => [...cards].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10),
+    [cards]
+  );
+
   return (
     <section className="page">
       <h2>閲覧</h2>
@@ -151,6 +156,13 @@ export function BrowsePage() {
             </>
           )}
         </>
+      )}
+
+      {!isViewing && (
+        <div className="browse-recent">
+          <h3>最近登録したカード</h3>
+          <CardList cards={recentlyAdded} />
+        </div>
       )}
     </section>
   );

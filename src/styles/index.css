@@ -191,6 +191,32 @@ button.active {
   font-size: 0.9rem;
 }
 
+.source-filter {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  margin: 0 0 0.75rem;
+}
+
+.source-filter legend {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  padding: 0 0.3rem;
+}
+
+.source-filter__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.source-filter__item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
 .type-badge {
   display: inline-block;
   font-size: 0.7rem;
@@ -241,9 +267,19 @@ button.active {
 .card-list-item__meta {
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
   font-size: 0.8rem;
   color: var(--color-muted);
+}
+
+.browse-recent {
+  margin-top: 2rem;
+}
+
+.browse-recent h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
 }
 
 .browse-tabs {
@@ -405,6 +441,76 @@ button.active {
 
 .card-detail__content :first-child {
   margin-top: 0;
+}
+
+.ai-elaborate {
+  margin-top: 1rem;
+}
+
+.ai-elaborate__keyword-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.ai-elaborate__btn {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.ai-elaborate__error {
+  color: #c62828;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ai-elaborate__error {
+    color: #ff8a80;
+  }
+}
+
+.ai-elaborate__used-keyword {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin: 0.75rem 0 0;
+}
+
+.ai-elaborate__result {
+  margin-top: 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.ai-elaborate__result :first-child {
+  margin-top: 0;
+}
+
+.ai-elaborate__result :last-child {
+  margin-bottom: 0;
+}
+
+.ai-elaborate__result ul,
+.ai-elaborate__result ol {
+  padding-left: 1.3rem;
+}
+
+.source-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.source-field__select {
+  font-size: 0.85rem;
+  color: var(--color-muted);
 }
 
 .field {

@@ -13,11 +13,12 @@ interface CardViewerProps {
 }
 
 export function CardViewer({ cards, onExit, onCardUpdated }: CardViewerProps) {
-  const { allTags } = useCards();
+  const { allTags, allSources } = useCards();
   const [index, setIndex] = useState(0);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
+  const [editSource, setEditSource] = useState("");
   const [editTags, setEditTags] = useState<string[]>([]);
   const [status, setStatus] = useState("");
   const current = cards[index];
@@ -46,6 +47,7 @@ export function CardViewer({ cards, onExit, onCardUpdated }: CardViewerProps) {
   const startEditing = () => {
     setEditTitle(current.title);
     setEditContent(current.content);
+    setEditSource(current.source);
     setEditTags(current.tags);
     setStatus("");
     setEditing(true);
@@ -57,13 +59,14 @@ export function CardViewer({ cards, onExit, onCardUpdated }: CardViewerProps) {
       const res = await fetch(`/api/cards/${current.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: editTitle, content: editContent, tags: editTags }),
+        body: JSON.stringify({ title: editTitle, content: editContent, tags: editTags, source: editSource }),
       });
       if (res.ok) {
         onCardUpdated({
           ...current,
           title: editTitle,
           content: editContent,
+          source: editSource,
           tags: editTags,
           updatedAt: new Date().toISOString(),
           type: editContent.trim().length > NOTE_THRESHOLD ? "note" : "card",
@@ -98,6 +101,33 @@ export function CardViewer({ cards, onExit, onCardUpdated }: CardViewerProps) {
               ? `情報ノートになります(${NOTE_THRESHOLD}字超)`
               : `情報カードになります(${NOTE_THRESHOLD}字以下)`}
           </p>
+          <label className="field">
+            ソース(任意)
+            <div className="source-field">
+              <input
+                value={editSource}
+                onChange={(e) => setEditSource(e.target.value)}
+                placeholder="書籍名・URLなど(新規入力も可)"
+              />
+              {allSources.length > 0 && (
+                <select
+                  className="source-field__select"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) setEditSource(e.target.value);
+                    e.target.value = "";
+                  }}
+                >
+                  <option value="">既存のソースから選択…</option>
+                  {allSources.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </label>
           <TagFilter allTags={allTags} selected={editTags} onChange={setEditTags} />
           {status && <p className="register-page__status">{status}</p>}
         </div>

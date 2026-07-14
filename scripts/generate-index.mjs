@@ -30,6 +30,7 @@ export function generateIndex() {
       updatedAt: data.updatedAt ?? null,
       content: trimmed,
       type: trimmed.length > NOTE_THRESHOLD ? "note" : "card",
+      source: typeof data.source === "string" ? data.source : "",
     };
   });
 
