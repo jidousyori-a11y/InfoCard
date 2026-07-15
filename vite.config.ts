@@ -8,4 +8,9 @@ import { aiApiPlugin } from "./src/devServer/aiApiPlugin";
 export default defineConfig({
   base: "./",
   plugins: [react(), registerApiPlugin(), aiApiPlugin()],
+  server: {
+    host: "0.0.0.0",
+    port: 10501,
+    strictPort: true,
+  },
 });
