@@ -66,8 +66,12 @@ export function RegisterPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
+        const data = await res.json();
         setStatus("保存しました。ページを再読み込みします...");
-        setTimeout(() => location.reload(), 500);
+        setTimeout(() => {
+          location.hash = `/cards/${data.id}`;
+          location.reload();
+        }, 500);
       } else {
         setStatus("保存に失敗しました。");
       }
