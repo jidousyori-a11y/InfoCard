@@ -5,10 +5,12 @@ import type { Plugin } from "vite";
 
 const GEMINI_MODEL = "gemini-2.5-flash";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROMPT_FILE = path.join(__dirname, "prompts", "elaborate.md");
+// public/ 配下に置くことで、ブラウザから直接Geminiを呼ぶ経路(GitHub Pagesなど)でも
+// 同じテンプレートを fetch できる。
+const PROMPT_FILE = path.join(__dirname, "..", "..", "public", "prompts", "elaborate.md");
 
 /**
- * プロンプトのテンプレートは prompts/elaborate.md に外だししてある。
+ * プロンプトのテンプレートは public/prompts/elaborate.md に外だししてある。
  * リクエストのたびに読み直すので、devサーバーを再起動せずに文面を調整できる。
  */
 function renderPrompt(vars: Record<string, string>): string {

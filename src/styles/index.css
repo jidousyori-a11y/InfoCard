@@ -502,6 +502,58 @@ button.active {
   padding-left: 1.3rem;
 }
 
+.ai-key-box {
+  margin-top: 1.2rem;
+}
+
+.ai-key-toggle {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.ai-key-panel {
+  margin-top: 0.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.ai-key-panel__desc {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.ai-key-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  margin-bottom: 0.6rem;
+}
+
+.ai-key-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ai-key-status {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
 .source-field {
   display: flex;
   flex-direction: column;
