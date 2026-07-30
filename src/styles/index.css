@@ -25,6 +25,10 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -485,8 +489,9 @@ button.active {
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 0.9rem 1rem;
-  font-size: 0.9rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
 }
 
 .ai-elaborate__result :first-child {
@@ -497,9 +502,35 @@ button.active {
   margin-bottom: 0;
 }
 
+.ai-elaborate__result p {
+  margin: 0 0 0.75rem;
+}
+
+.ai-elaborate__result h1,
+.ai-elaborate__result h2,
+.ai-elaborate__result h3,
+.ai-elaborate__result h4,
+.ai-elaborate__result h5,
+.ai-elaborate__result h6 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
 .ai-elaborate__result ul,
 .ai-elaborate__result ol {
-  padding-left: 1.3rem;
+  margin: 0 0 0.75rem;
+  padding-left: 1.4rem;
+}
+
+.ai-elaborate__result li {
+  margin-bottom: 0.35rem;
+}
+
+.ai-elaborate__result code {
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
 }
 
 .ai-key-box {
