@@ -31,6 +31,7 @@ export function generateIndex() {
       content: trimmed,
       type: trimmed.length > NOTE_THRESHOLD ? "note" : "card",
       source: typeof data.source === "string" ? data.source : "",
+      aiNote: typeof data.aiNote === "string" ? data.aiNote : "",
     };
   });
 

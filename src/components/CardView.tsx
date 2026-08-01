@@ -18,14 +18,38 @@ export function CardView({ card }: { card: Card }) {
   const [geminiKey, setGeminiKey] = useState(() => loadGeminiKey());
   const [keyPanelOpen, setKeyPanelOpen] = useState(false);
   const [keyInput, setKeyInput] = useState("");
+  const [saveStatus, setSaveStatus] = useState("");
+  const [saving, setSaving] = useState(false);
   const aiHtml = useMemo(() => (aiText ? (marked.parse(aiText, { async: false }) as string) : ""), [aiText]);
+  const savedAiHtml = useMemo(
+    () => (card.aiNote ? (marked.parse(card.aiNote, { async: false }) as string) : ""),
+    [card.aiNote]
+  );
 
   useEffect(() => {
     setAiText("");
     setAiLoading(false);
     setAiError("");
     setKeyword("");
+    setSaveStatus("");
   }, [card.id]);
+
+  const saveAiNote = async () => {
+    setSaving(true);
+    setSaveStatus("");
+    try {
+      const res = await fetch(`/api/cards/${encodeURIComponent(card.id)}/ai-note`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ aiNote: aiText }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `HTTP ${res.status}`);
+      location.reload();
+    } catch (err: any) {
+      setSaveStatus("保存に失敗しました: " + (err?.message || String(err)));
+      setSaving(false);
+    }
+  };
 
   const requestElaborate = async () => {
     setAiLoading(true);
@@ -88,28 +112,43 @@ export function CardView({ card }: { card: Card }) {
       </dl>
       <div className="card-detail__content" dangerouslySetInnerHTML={{ __html: html }} />
       <div className="ai-elaborate">
-        {!aiText && (
+        {card.aiNote ? (
+          // 保存済みのAI補足があれば、再リクエストなしに最初から表示する。
+          <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: savedAiHtml }} />
+        ) : (
           <>
-            <label className="ai-elaborate__keyword-field">
-              指定キーワード(任意)
-              <input
-                type="text"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                placeholder="例: 明治維新"
-                disabled={aiLoading}
-              />
-            </label>
-            <button type="button" className="ai-elaborate__btn" onClick={requestElaborate} disabled={aiLoading}>
-              {aiLoading ? "生成中..." : "🔍 AIに補足してもらう"}
-            </button>
-          </>
-        )}
-        {aiError && <p className="ai-elaborate__error">{aiError}</p>}
-        {aiText && (
-          <>
-            {keyword && <p className="ai-elaborate__used-keyword">指定キーワード: {keyword}</p>}
-            <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: aiHtml }} />
+            {!aiText && (
+              <>
+                <label className="ai-elaborate__keyword-field">
+                  指定キーワード(任意)
+                  <input
+                    type="text"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    placeholder="例: 明治維新"
+                    disabled={aiLoading}
+                  />
+                </label>
+                <button type="button" className="ai-elaborate__btn" onClick={requestElaborate} disabled={aiLoading}>
+                  {aiLoading ? "生成中..." : "🔍 AIに補足してもらう"}
+                </button>
+              </>
+            )}
+            {aiError && <p className="ai-elaborate__error">{aiError}</p>}
+            {aiText && (
+              <>
+                {keyword && <p className="ai-elaborate__used-keyword">指定キーワード: {keyword}</p>}
+                <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: aiHtml }} />
+                {import.meta.env.DEV && (
+                  <>
+                    <button type="button" className="ai-elaborate__btn" onClick={saveAiNote} disabled={saving}>
+                      {saving ? "保存中..." : "💾 この補足を保存する"}
+                    </button>
+                    {saveStatus && <p className="ai-elaborate__error">{saveStatus}</p>}
+                  </>
+                )}
+              </>
+            )}
           </>
         )}
         <div className="ai-key-box">

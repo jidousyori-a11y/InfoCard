@@ -65,6 +65,33 @@ export function registerApiPlugin(): Plugin {
             return;
           }
 
+          const aiNoteMatch = req.url.match(/^\/api\/cards\/([^/]+)\/ai-note$/);
+
+          if (req.method === "PATCH" && aiNoteMatch) {
+            const id = decodeURIComponent(aiNoteMatch[1]);
+            const filePath = path.join(CARDS_DIR, `${id}.md`);
+            if (!fs.existsSync(filePath)) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ error: "not found" }));
+              return;
+            }
+            const body = await readBody(req);
+            const aiNote = (body.aiNote ?? "").toString().trim();
+            if (!aiNote) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "保存する内容がありません。" }));
+              return;
+            }
+            const existing = matter(fs.readFileSync(filePath, "utf-8"));
+            const now = new Date().toISOString();
+            const frontmatter = { ...existing.data, aiNote, updatedAt: now };
+            fs.writeFileSync(filePath, matter.stringify(existing.content, frontmatter), "utf-8");
+            generateIndex();
+            res.statusCode = 200;
+            res.end(JSON.stringify({ id, updatedAt: now }));
+            return;
+          }
+
           const match = req.url.match(/^\/api\/cards\/([^/]+)$/);
 
           if (req.method === "DELETE" && match) {
@@ -98,6 +125,7 @@ export function registerApiPlugin(): Plugin {
               title: body.title ?? existing.data.title,
               tags: Array.isArray(body.tags) ? body.tags : existing.data.tags,
               source: typeof body.source === "string" ? body.source : (existing.data.source ?? ""),
+              aiNote: typeof body.aiNote === "string" ? body.aiNote : (existing.data.aiNote ?? ""),
               createdAt: existing.data.createdAt,
               updatedAt: now,
             };

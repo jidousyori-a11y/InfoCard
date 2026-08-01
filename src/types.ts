@@ -11,4 +11,6 @@ export interface Card {
   type: CardType;
   /** 出典・参照元(書籍名、URLなど)。未設定の場合は空文字 */
   source: string;
+  /** ユーザーが選んで保存したAI補足(elaborate結果)。未設定の場合は空文字 */
+  aiNote: string;
 }
