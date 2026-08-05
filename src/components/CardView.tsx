@@ -20,6 +20,7 @@ export function CardView({ card }: { card: Card }) {
   const [keyInput, setKeyInput] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [requerying, setRequerying] = useState(false);
   const aiHtml = useMemo(() => (aiText ? (marked.parse(aiText, { async: false }) as string) : ""), [aiText]);
   const savedAiHtml = useMemo(
     () => (card.aiNote ? (marked.parse(card.aiNote, { async: false }) as string) : ""),
@@ -32,6 +33,7 @@ export function CardView({ card }: { card: Card }) {
     setAiError("");
     setKeyword("");
     setSaveStatus("");
+    setRequerying(false);
   }, [card.id]);
 
   const saveAiNote = async () => {
@@ -112,41 +114,62 @@ export function CardView({ card }: { card: Card }) {
       </dl>
       <div className="card-detail__content" dangerouslySetInnerHTML={{ __html: html }} />
       <div className="ai-elaborate">
-        {card.aiNote ? (
-          // 保存済みのAI補足があれば、再リクエストなしに最初から表示する。
+        {card.aiNote && !aiText && (
+          // 保存済みのAI補足がある場合、まずそれを表示する(再問い合わせは下のボタンから)。
           <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: savedAiHtml }} />
-        ) : (
+        )}
+
+        {!aiText && (!card.aiNote || requerying) && (
           <>
-            {!aiText && (
+            <label className="ai-elaborate__keyword-field">
+              指定キーワード(任意)
+              <input
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="例: 明治維新"
+                disabled={aiLoading}
+              />
+            </label>
+            <button type="button" className="ai-elaborate__btn" onClick={requestElaborate} disabled={aiLoading}>
+              {aiLoading ? "生成中..." : "🔍 AIに補足してもらう"}
+            </button>
+          </>
+        )}
+
+        {card.aiNote && !aiText && !requerying && (
+          <button type="button" className="ai-elaborate__btn" onClick={() => setRequerying(true)}>
+            🔄 AIに再度問い合わせる
+          </button>
+        )}
+
+        {aiError && <p className="ai-elaborate__error">{aiError}</p>}
+
+        {aiText && (
+          <>
+            {keyword && <p className="ai-elaborate__used-keyword">指定キーワード: {keyword}</p>}
+            <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: aiHtml }} />
+            {import.meta.env.DEV && (
               <>
-                <label className="ai-elaborate__keyword-field">
-                  指定キーワード(任意)
-                  <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="例: 明治維新"
-                    disabled={aiLoading}
-                  />
-                </label>
-                <button type="button" className="ai-elaborate__btn" onClick={requestElaborate} disabled={aiLoading}>
-                  {aiLoading ? "生成中..." : "🔍 AIに補足してもらう"}
+                <button type="button" className="ai-elaborate__btn" onClick={saveAiNote} disabled={saving}>
+                  {saving ? "保存中..." : card.aiNote ? "💾 この内容で上書き保存する" : "💾 この補足を保存する"}
                 </button>
-              </>
-            )}
-            {aiError && <p className="ai-elaborate__error">{aiError}</p>}
-            {aiText && (
-              <>
-                {keyword && <p className="ai-elaborate__used-keyword">指定キーワード: {keyword}</p>}
-                <div className="ai-elaborate__result" dangerouslySetInnerHTML={{ __html: aiHtml }} />
-                {import.meta.env.DEV && (
-                  <>
-                    <button type="button" className="ai-elaborate__btn" onClick={saveAiNote} disabled={saving}>
-                      {saving ? "保存中..." : "💾 この補足を保存する"}
-                    </button>
-                    {saveStatus && <p className="ai-elaborate__error">{saveStatus}</p>}
-                  </>
+                {card.aiNote && (
+                  <button
+                    type="button"
+                    className="ai-elaborate__btn"
+                    onClick={() => {
+                      setAiText("");
+                      setRequerying(false);
+                      setAiError("");
+                      setSaveStatus("");
+                    }}
+                    disabled={saving}
+                  >
+                    破棄して保存済みの内容に戻す
+                  </button>
                 )}
+                {saveStatus && <p className="ai-elaborate__error">{saveStatus}</p>}
               </>
             )}
           </>
