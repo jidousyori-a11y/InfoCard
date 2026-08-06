@@ -39,6 +39,17 @@ export function registerApiPlugin(): Plugin {
       generateIndex();
     },
     configureServer(server) {
+      // content/cards/*.md がAPI経由(このプラグイン自身の書き込み)以外で変わった場合
+      // (直接の手編集など)も検知して cards.json を追従させる。
+      server.watcher.add(CARDS_DIR);
+      server.watcher.on("all", (event, file) => {
+        if (event === "change" || event === "add" || event === "unlink") {
+          if (path.resolve(file).startsWith(path.resolve(CARDS_DIR)) && file.endsWith(".md")) {
+            generateIndex();
+          }
+        }
+      });
+
       server.middlewares.use(async (req, res, next) => {
         if (!req.url?.startsWith("/api/cards")) return next();
         res.setHeader("Content-Type", "application/json; charset=utf-8");

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-index.mjs && tsc --noEmit && vite build",
+    "build": "node scripts/generate-index.mjs && node scripts/generate-changelog.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
-    "generate-index": "node scripts/generate-index.mjs"
+    "generate-index": "node scripts/generate-index.mjs",
+    "generate-changelog": "node scripts/generate-changelog.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

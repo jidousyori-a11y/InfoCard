@@ -1,12 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type { Plugin } from "vite";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "../..");
-const NOTES_FILE = path.join(ROOT, "notes.json");
-const OUTPUT_FILE = path.join(ROOT, "src", "generated", "changelogNotes.json");
+import { generateChangelog, NOTES_FILE } from "../../scripts/generate-changelog.mjs";
 
 interface ChangeNote {
   id: number;
@@ -29,8 +24,7 @@ function readNotes(): ChangeNote[] {
 // cards.json(content/cards/*.md → generateIndex())と同じ「正本→生成物」の関係。
 function writeNotes(notes: ChangeNote[]): void {
   fs.writeFileSync(NOTES_FILE, JSON.stringify({ notes }));
-  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(notes, null, 2), "utf-8");
+  generateChangelog();
 }
 
 function readBody(req: any): Promise<any> {
@@ -59,6 +53,13 @@ export function changelogApiPlugin(): Plugin {
       writeNotes(readNotes());
     },
     configureServer(server) {
+      // notes.json がAPI経由(このプラグイン自身の書き込み)以外で変わった場合
+      // (直接の手編集など)も検知して changelogNotes.json を追従させる。
+      server.watcher.add(NOTES_FILE);
+      server.watcher.on("change", (file) => {
+        if (path.resolve(file) === path.resolve(NOTES_FILE)) generateChangelog();
+      });
+
       server.middlewares.use(async (req, res, next) => {
         if (!req.url?.startsWith("/api/changelog")) return next();
         res.setHeader("Content-Type", "application/json; charset=utf-8");
