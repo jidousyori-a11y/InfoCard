@@ -7,6 +7,17 @@
   --color-accent: #3b5bdb;
   --color-accent-contrast: #ffffff;
   color-scheme: light dark;
+
+  /* 統計ページの円グラフ用カテゴリカラー(8スロット、固定順)。値は変えず、
+     どのカテゴリがどのスロットになるかだけを src/lib/sourceStats.ts が決める。 */
+  --cat-color-0: #2a78d6;
+  --cat-color-1: #eb6834;
+  --cat-color-2: #1baf7a;
+  --cat-color-3: #eda100;
+  --cat-color-4: #e87ba4;
+  --cat-color-5: #008300;
+  --cat-color-6: #4a3aa7;
+  --cat-color-7: #e34948;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,6 +29,15 @@
     --color-muted: #9a9aa2;
     --color-accent: #6c8cff;
     --color-accent-contrast: #10121a;
+
+    --cat-color-0: #3987e5;
+    --cat-color-1: #d95926;
+    --cat-color-2: #199e70;
+    --cat-color-3: #c98500;
+    --cat-color-4: #d55181;
+    --cat-color-5: #008300;
+    --cat-color-6: #9085e9;
+    --cat-color-7: #e66767;
   }
 }
 
@@ -236,6 +256,17 @@ button.active {
   color: var(--color-accent-contrast);
   background: var(--color-accent);
   border-color: var(--color-accent);
+}
+
+.ai-note-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  color: var(--cat-color-2);
+  border: 1px solid var(--cat-color-2);
 }
 
 .result-count {
@@ -727,4 +758,115 @@ button.active {
   .card-list-item__meta {
     flex-direction: row-reverse;
   }
+}
+
+/* ---- 統計ページ ---- */
+
+.stats-page__desc {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+.stats-table-wrap {
+  overflow-x: auto;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.stats-table td:last-child,
+.stats-table th:last-child {
+  white-space: normal;
+}
+
+.stats-table th {
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.stats-table__count {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.source-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.source-pie__slice {
+  stroke: none;
+  transition: opacity 0.15s ease;
+}
+
+.source-pie__slice-group:hover .source-pie__slice {
+  opacity: 0.85;
+}
+
+.source-pie__label {
+  fill: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.source-pie__total-value {
+  fill: var(--color-text);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.source-pie__total-label {
+  fill: var(--color-muted);
+  font-size: 12px;
+}
+
+.source-pie__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 14rem;
+}
+
+.source-pie__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.source-pie__legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.source-pie__legend-label {
+  color: var(--color-text);
+  flex: 1;
+}
+
+.source-pie__legend-value {
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
 }

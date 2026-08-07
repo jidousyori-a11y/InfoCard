@@ -13,6 +13,11 @@ export function CardListItem({ card }: { card: Card }) {
         <span className={`type-badge type-badge--${card.type}`}>
           {card.type === "note" ? "ノート" : "カード"}
         </span>
+        {card.aiNote && (
+          <span className="ai-note-badge" title="AI補足あり">
+            🤖 AI補足
+          </span>
+        )}
         {card.title}
       </div>
       <div className="card-list-item__meta">

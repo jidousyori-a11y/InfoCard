@@ -4,6 +4,7 @@ import { BrowsePage } from "./pages/BrowsePage";
 import { CardDetailPage } from "./pages/CardDetailPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ChangelogPage } from "./pages/ChangelogPage";
+import { StatsPage } from "./pages/StatsPage";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
             </NavLink>
             <NavLink to="/search">検索</NavLink>
             {import.meta.env.DEV && <NavLink to="/register">登録</NavLink>}
+            <NavLink to="/stats">📊 統計</NavLink>
             <NavLink to="/changelog">📝 更改メモ</NavLink>
           </nav>
         </header>
@@ -27,6 +29,7 @@ export default function App() {
             <Route path="/cards/:id" element={<CardDetailPage />} />
             {import.meta.env.DEV && <Route path="/register" element={<RegisterPage />} />}
             {import.meta.env.DEV && <Route path="/register/:id" element={<RegisterPage />} />}
+            <Route path="/stats" element={<StatsPage />} />
             <Route path="/changelog" element={<ChangelogPage />} />
           </Routes>
         </main>
